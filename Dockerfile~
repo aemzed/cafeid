@@ -1,0 +1,28 @@
+﻿FROM php:8.2-apache
+
+# Install dependencies
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd
+
+# Enable apache mod_rewrite
+RUN a2enmod rewrite
+
+# Configure Apache to allow .htaccess in the public folder
+RUN echo '<Directory /var/www/html/public>' > /etc/apache2/conf-available/htaccess.conf \
+    && echo '    AllowOverride All' >> /etc/apache2/conf-available/htaccess.conf \
+    && echo '    Require all granted' >> /etc/apache2/conf-available/htaccess.conf \
+    && echo '</Directory>' >> /etc/apache2/conf-available/htaccess.conf \
+    && a2enconf htaccess
+
+# Copy the project files
+COPY . /var/www/html/
+
+# Set the working directory
+WORKDIR /var/www/html
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose port 80
+EXPOSE 80
