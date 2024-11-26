@@ -517,7 +517,7 @@ class CURLRequest extends OutgoingRequest
      */
     protected function setCURLOptions(array $curlOptions = [], array $config = [])
     {
-        // Auth Headers
+        // auth Headers
         if (! empty($config['auth'])) {
             $curlOptions[CURLOPT_USERPWD] = $config['auth'][0] . ':' . $config['auth'][1];
 
